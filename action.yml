@@ -1,0 +1,18 @@
+name: 'Git Fetch Action'
+description: 'An action that distributes and configures git_fetch.py, a script that wraps git and automatically retries fetching if any errors occur'
+runs:
+  using: 'composite'
+  steps:
+    - name: Backup original git executable
+      shell: bash
+      run: sudo mv /usr/bin/git /usr/bin/git_orig
+    
+    - name: Copy git_fetch.py to /usr/bin/git
+      shell: bash
+      run: |
+        sudo cp ${{ github.action_path }}/scripts/git_fetch.py /usr/bin/git
+        sudo chmod +x /usr/bin/git
+    
+    - name: Set environment variable for original git
+      shell: bash
+      run: echo "GIT_EXECUTABLE=/usr/bin/git_orig" >> $GITHUB_ENV
